@@ -38,7 +38,7 @@ Last login: Thu Apr  4 14:56:17 2019 from 90.74.16.47
 * Instal·lem els paquets necessàris:
 
 ```
-dnf -y install uw-imap passwd procps nmap
+dnf -y install uw-imap passwd procps nmap telnet
 ```
 
 * Creem els usuaris
@@ -87,6 +87,43 @@ Nmap done: 1 IP address (1 host up) scanned in 1.62 seconds
 Tenim els ports que voliem oberts correctament!
 
 
+* Comprovació servidor en funcionament
+
+```
+[root@popserver docker]# telnet  localhost 110
+Trying ::1...
+Connected to localhost.
+Escape character is '^]'.
++OK POP3 localhost 2007f.104 server ready
+USER pere
++OK User name accepted, password please
+USER marta
++OK User name accepted, password please
+USE^C^[^@^[^]
+telnet> Connection closed.
+[root@popserver docker]# telnet  localhost 110
+Trying ::1...
+Connected to localhost.
+Escape character is '^]'.
++OK POP3 localhost 2007f.104 server ready
+USER pere
++OK User name accepted, password please
+PASS pere
++OK Mailbox open, 2 messages
+LIST
++OK Mailbox scan listing follows
+1 166
+2 90
+.
+RETR 2
++OK 90 octets
+Received: from ... by ... with SMTP
+Subject: Iggeret
+To: <you@aoeu.snth>
+Status:  O
+```
+
+
 #### EXECUCIÓ CONTAINER AUTOMATITZAT AMB DETACH
 
 * Abans que res creem la imatge del servidor amb la següent ordre:
@@ -120,6 +157,10 @@ PORT    STATE SERVICE
 110/tcp open  pop3
 995/tcp open  pop3s
 ```
+
+* Comprovació funcionament 
+
+
 
 
 #### Descarrèga de mails
@@ -280,3 +321,34 @@ dnf -y install thunderbird
 
 
 No troba el servidor pop i no hem deixa autenticar amb els usuaris.
+
+
+### ORDRES GIT I DOCKER
+
+* Per **guardar i pujar** els canvis fets en repositori git al local, seguirem els següents passos:
+
+	- git add
+	- git commit -m "commit message"
+	- git push (Validar-se contra github amb les credencials)
+
+
+* Per pujar les imatges al **Dockerhub** primer guardarem les imatges en local en els tags corresponents:
+
+```
+docker tag eescriba/m11extraeric:latest eescriba/m11extraeric:v1
+
+```
+
+* Actualitzar el remot:
+
+```
+[root@ip-172-31-28-34 m11extraeric]# docker push eescriba/m11extraeric:v1
+
+[root@ip-172-31-28-34 m11extraeric]# docker push eescriba/m11extraeric:latest
+```
+
+
+
+
+
+
